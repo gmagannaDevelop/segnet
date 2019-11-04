@@ -2,7 +2,7 @@
 name = "segmed"
 version = "0.6.12"
 description = "Applying Deep Learning to medical image segmentation tasks"
-authors = ["Edwin Bedolla <developeredwin@gmail.com>"]
+authors = ["Edwin Bedolla <developeredwin@gmail.com>", "Gustavo Magaña López <gmaganna.biomed@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/DCI-NET/segmed"
