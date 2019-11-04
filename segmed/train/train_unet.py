@@ -1,9 +1,12 @@
-from segmed.metrics import metrics as mts
+
+from segnet.models import unet
+from segnet.metrics import metrics as mts
+from segnet.utils import timing
 import tensorflow as tf
 
-
-def train_unet(
-    segmodel,
+@timing.time_log(path_to_logfile="drive/My Drive/DCI-Net/time_logs.jsonl")
+def train_segnet(
+    model,
     img_path,
     mask_path,
     batch_size=16,
