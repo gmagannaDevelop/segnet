@@ -194,6 +194,8 @@ class Segmed(object):
     
     ## Create an instance decorator, specifying _log_file_path
     self.__logged: Callable = timing.time_log(self.log_file)
+    ## Create a callback to save the results, per epoch, to the history file :
+    self.__csv_logger = tf.keras.callbacks.CSVLogger(self.history_file, append=True)
 
     ## Log initial info to comment file :
     _initial_message = f"\n{self._author}, running '{self._name}' model instantiated at {self._date}\n"
@@ -503,7 +505,7 @@ class Segmed(object):
     # Create history 
     self._history = _fit_generator(
         self._train_generator,
-        callbacks=[self._checkpoint],
+        callbacks=[self._checkpoint,self.__csv_logger],
         verbose=1,
         validation_data=self._val_generator,
         validation_steps=self._hyper_params["steps_per_epoch"],
@@ -512,13 +514,14 @@ class Segmed(object):
         use_multiprocessing=True
     )
 
+    """
     try:
       self._metrics_history = pd.DataFrame(self._history.history)
       self._metrics_history.to_csv(self.history_file)
       print(f"History saved to {self.history_file}")
     except:
       print(f"Could not open file : {self.history_file}")
-
+    """
 
   def comment(self, cmt: str) -> NoReturn:
     """ Comment something to self.comment_file, logging the Author and UTCdatetime """
