@@ -489,9 +489,9 @@ class Segmed(object):
     Calls a decorated version of `self._model.fit_generator` which 
     will create a log of the parameters passed to it and the execution time.
 
-    Will also save the training history to a csv file :
-      self._metrics_history = pd.DataFrame(self._history.history)
-      self._metrics_history.to_csv(self.history_file)
+    Will also save the training history, per epoch, to a csv file `self.history_file`.
+    This is done by using the tensorflow.keras.callbacks.CSVLogger
+
     
     """
 
@@ -533,7 +533,7 @@ class Segmed(object):
     _fit_generator = self.__logged(self._model.fit_generator)
 
     # Create history 
-    if verbose: print(f"\nTraining {self._name} on {self._data_path}\n")
+    if verbose: print(f"\nTraining `{self._name}` on dataset : `{self._data_path}`\n")
     if verbose: print(f"\nSaving per epoch history to  {self.history_file}\n")
     self._history = _fit_generator(
         self._train_generator,
