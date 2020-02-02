@@ -520,8 +520,12 @@ class Segmed(object):
       } 
     }
 
-    with open(self.params_file, 'w') as f:
-      f.write(json.dumps(_log_dict))
+    try:
+      with open(self.params_file, 'w') as f:
+        f.write(json.dumps(_log_dict))
+    except Exception as e:
+      print(f"An exception `{e}` was raised!")
+      print(f"This probably means that writing to {self.params_file} failed.")
 
     if verbose: print(f"\nCompiling model with params: {self._compiling_kw}\n")
     self.compile(compiling_kw=self._compiling_kw)
@@ -554,8 +558,12 @@ class Segmed(object):
         key: self.json_cast(_history_params[key]) for key in _history_params.keys()
       }
     })
-    with open(self.params_file, 'w') as f:
-      f.write(json.dumps(_log_dict))
+    try:
+      with open(self.params_file, 'w') as f:
+        f.write(json.dumps(_log_dict))
+    except Exception as e:
+      print(f"An exception `{e}` was raised!")
+      print(f"This probably means that writing to `{self.params_file}` failed.")
 
     self._metrics_history = pd.DataFrame(self._history.history)
     # There was a try/except block right here, but I'm removing it to test the callback.
