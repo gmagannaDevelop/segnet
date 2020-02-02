@@ -499,7 +499,9 @@ class Segmed(object):
     self._data_gen_args: Dict[str,Any] = data_gen_args or Segmed.__data_gen_args
     self._hyper_params:  Dict[str,Any] = hyper_params  or Segmed.__hyper_params 
     self._model_checkpoint_kw: Dict[str,Any] = model_checkpoint_kw or Segmed.__model_checkpoint_kw
-
+    
+    _optimizer_config = self._compiling_kw["optimizer"].get_config()
+    
     _log_dict = {
       "Compiling keywords": {
         key: self.json_cast(self._compiling_kw[key]) for key in self._compiling_kw.keys()
@@ -513,7 +515,9 @@ class Segmed(object):
       "Model checkpoint (callback) keywords": {
         key: self.json_cast(self._model_checkpoint_kw[key]) for key in self._model_checkpoint_kw.keys()
       },
-      "Optimizer configuration": self._compiling_kw["optimizer"].get_config()
+      "Optimizer configuration": {
+        key: self.json_cast(_optimizer_config[key]) for key in _optimizer_config.keys()
+      } 
     }
 
     with open(self.params_file, 'w') as f:
