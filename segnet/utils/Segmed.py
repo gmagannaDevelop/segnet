@@ -517,7 +517,11 @@ class Segmed(object):
     }
 
     with open(self.params_file, 'w') as f:
-      f.write(json.dumps(_log_dict))
+      f.write(f"{json.dumps(_log_dict['Compiling keywords'])}\n")
+      f.write(f"{json.dumps(_log_dict['Datagen keywords'])}\n")
+      f.write(f"{json.dumps(_log_dict['Hyper params'])}\n")
+      f.write(f"{json.dumps(_log_dict['Model checkpoint (callback) keywords'])}\n")
+      f.write(f"{json.dumps(_log_dict['Optimizer configuration'])}\n")
 
     if verbose: print(f"\nCompiling model with params: {self._compiling_kw}\n")
     self.compile(compiling_kw=self._compiling_kw)
