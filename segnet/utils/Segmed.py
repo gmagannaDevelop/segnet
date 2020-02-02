@@ -21,6 +21,8 @@ from segnet.metrics import metrics as mts
 class Segmed(object):
   """
     Deep Learning Model Generator Object.
+    Ideal for training Deep Learning models, creating
+    useful and meaningful logs.
   """
 
   # Definition of static methods, utility functions logically
@@ -252,6 +254,12 @@ class Segmed(object):
   def comment_file(self) -> str:
     """ Name (full path) of the comment file (.txt format) """
     return os.path.join(self._instance_dir, f"{self.name}-comments.txt")
+
+
+  @property
+  def params_file(self) -> str:
+    """ Name (full path) of the file which will save all training/history params (.jsonl format) """
+    return os.path.join(self._instance_dir, f"{self.name}-training_params.jsonl")
 
 
   @property
@@ -492,6 +500,25 @@ class Segmed(object):
     self._hyper_params:  Dict[str,Any] = hyper_params  or Segmed.__hyper_params 
     self._model_checkpoint_kw: Dict[str,Any] = model_checkpoint_kw or Segmed.__model_checkpoint_kw
 
+    _log_dict = {
+      "Compiling keywords": {
+        key: self.json_cast(self._compiling_kw[key]) for key in self._compiling_kw.keys()
+      },
+      "Datagen keywords": {
+        key: self.json_cast(self._data_gen_args[key]) for key in self._data_gen_args.keys()
+      },
+      "Hyper params": {
+        key: self.json_cast(self._hyper_params[key]) for key in self._hyper_params.keys()
+      },
+      "Model checkpoint (callback) keywords": {
+        key: self.json_cast(self._model_checkpoint_kw[key]) for key in self._model_checkpoint_kw.keys()
+      },
+      "Optimizer configuration": self._compiling_kw["optimizer"].get_config()
+    }
+
+    with open(self.params_file, 'w') as f:
+      f.write(json.dumps(_log_dict))
+
     if verbose: print(f"\nCompiling model with params: {self._compiling_kw}\n")
     self.compile(compiling_kw=self._compiling_kw)
     if verbose: print(f"\nCreating custom callback with params: {self._model_checkpoint_kw}\n")
@@ -518,6 +545,9 @@ class Segmed(object):
         epochs = self._hyper_params["epochs"],
         use_multiprocessing = True
     )
+    _log_dict.update({"History params": self._history.params})
+    with open(self.params_file, 'w') as f:
+      f.write(json.dumps(_log_dict))
 
     self._metrics_history = pd.DataFrame(self._history.history)
     # There was a try/except block right here, but I'm removing it to test the callback.
