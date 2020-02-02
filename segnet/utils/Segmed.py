@@ -14,9 +14,6 @@ import tensorflow as tf
 
 # Repo-specific imports :
 from segnet.models import unet
-from segnet.models import multiresunet as mru
-from segnet.models import multiresunet2 as mru2
-from segnet.models import multiresunet3 as mru3
 from segnet.utils import timing
 from segnet.metrics import metrics as mts
 
@@ -495,33 +492,38 @@ class Segmed(object):
     self._hyper_params:  Dict[str,Any] = hyper_params  or Segmed.__hyper_params 
     self._model_checkpoint_kw: Dict[str,Any] = model_checkpoint_kw or Segmed.__model_checkpoint_kw
 
-    self.compile(compiling_kw=compiling_kw)
-    self.create_custom_callback(model_checkpoint_kw=model_checkpoint_kw)
-    self.create_train_test_generators(data_gen_args=data_gen_args, hyper_params=hyper_params)
+    if verbose: print(f"Compiling model with params: {self._compiling_kw}")
+    self.compile(compiling_kw=self._compiling_kw)
+    if verbose: print(f"Creating custom callback with params: {self._model_checkpoint_kw}")
+    self.create_custom_callback(model_checkpoint_kw=self._model_checkpoint_kw)
+    if verbose: print(f"Creating train and test generators with params:\nfor data gen:{self._data_gen_args}\nhyper_params:{self._hyper_params}")
+    self.create_train_test_generators(
+        data_gen_args=self._data_gen_args, 
+        hyper_params=self._hyper_params
+    )
     
     # Decorate the model's fit generator to log parameters and execution time :
     _fit_generator = self.__logged(self._model.fit_generator)
 
     # Create history 
+    if verbose: print(f"Training {self._name} on {self._data_path}")
+    if verbose: print(f"Saving per epoch history to  {self.history_file}")
     self._history = _fit_generator(
         self._train_generator,
-        callbacks=[self._checkpoint,self.__csv_logger],
+        callbacks = [self._checkpoint,self.__csv_logger],
         verbose=1,
-        validation_data=self._val_generator,
-        validation_steps=self._hyper_params["steps_per_epoch"],
-        steps_per_epoch=self._hyper_params["steps_per_epoch"],
-        epochs=self._hyper_params["epochs"],
-        use_multiprocessing=True
+        validation_data = self._val_generator,
+        validation_steps = self._hyper_params["steps_per_epoch"],
+        steps_per_epoch = self._hyper_params["steps_per_epoch"],
+        epochs = self._hyper_params["epochs"],
+        use_multiprocessing = True
     )
 
-    """
-    try:
-      self._metrics_history = pd.DataFrame(self._history.history)
-      self._metrics_history.to_csv(self.history_file)
-      print(f"History saved to {self.history_file}")
-    except:
-      print(f"Could not open file : {self.history_file}")
-    """
+    self._metrics_history = pd.DataFrame(self._history.history)
+    # There was a try/except block right here, but I'm removing it to test the callback.
+    #self._metrics_history.to_csv(self.history_file)
+    #print(f"History saved to {self.history_file}")
+    #print(f"Could not open file : {self.history_file}")
 
   def comment(self, cmt: str) -> NoReturn:
     """ Comment something to self.comment_file, logging the Author and UTCdatetime """
