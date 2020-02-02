@@ -34,9 +34,9 @@ def main():
     }
 
     my_hyper_params = {
-        'batch_size': 25,
+        'batch_size': 2,
         'epochs': 150,
-        'steps_per_epoch': 6
+        'steps_per_epoch': 3
     }
 
     models = {
@@ -51,7 +51,7 @@ def main():
     x = Segmed(
         model = models[model],
         name = model, 
-        base_dir = "/Users/gml/Google Drive/DCI-Net/SegMedLogs/LocalTests", 
+        base_dir = "/Users/gml/Google Drive/DCI-Net/SegMedLogs/LocalTests/AutoLog", 
         data_path = dataset_paths["dermoscopy80"], 
         author = "Gustavo Magaña"
     )
