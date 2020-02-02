@@ -492,11 +492,11 @@ class Segmed(object):
     self._hyper_params:  Dict[str,Any] = hyper_params  or Segmed.__hyper_params 
     self._model_checkpoint_kw: Dict[str,Any] = model_checkpoint_kw or Segmed.__model_checkpoint_kw
 
-    if verbose: print(f"Compiling model with params: {self._compiling_kw}")
+    if verbose: print(f"\nCompiling model with params: {self._compiling_kw}\n")
     self.compile(compiling_kw=self._compiling_kw)
-    if verbose: print(f"Creating custom callback with params: {self._model_checkpoint_kw}")
+    if verbose: print(f"\nCreating custom callback with params: {self._model_checkpoint_kw}\n")
     self.create_custom_callback(model_checkpoint_kw=self._model_checkpoint_kw)
-    if verbose: print(f"Creating train and test generators with params:\nfor data gen:{self._data_gen_args}\nhyper_params:{self._hyper_params}")
+    if verbose: print(f"\nCreating train and test generators with params:\nfor data gen:{self._data_gen_args}\nhyper_params:{self._hyper_params}\n")
     self.create_train_test_generators(
         data_gen_args=self._data_gen_args, 
         hyper_params=self._hyper_params
@@ -506,8 +506,8 @@ class Segmed(object):
     _fit_generator = self.__logged(self._model.fit_generator)
 
     # Create history 
-    if verbose: print(f"Training {self._name} on {self._data_path}")
-    if verbose: print(f"Saving per epoch history to  {self.history_file}")
+    if verbose: print(f"\nTraining {self._name} on {self._data_path}\n")
+    if verbose: print(f"\nSaving per epoch history to  {self.history_file}\n")
     self._history = _fit_generator(
         self._train_generator,
         callbacks = [self._checkpoint,self.__csv_logger],
