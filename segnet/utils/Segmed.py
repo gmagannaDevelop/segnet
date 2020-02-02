@@ -226,7 +226,7 @@ class Segmed(object):
 
   @property
   def values(self) -> List[Any]:
-    """ Get the values, i.e. object properties. """ 
+    """ Get the values, i.e. object's attributes. """ 
     return [ self[key] for key in self.keys ]
 
 
