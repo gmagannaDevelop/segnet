@@ -550,8 +550,9 @@ class Segmed(object):
         use_multiprocessing = True
     )
     _history_params = self._history.params
-    _log_dict.update({"History params": 
+    _log_dict.update({"History params": { 
         key: self.json_cast(_history_params[key]) for key in _history_params.keys()
+      }
     })
     with open(self.params_file, 'w') as f:
       f.write(json.dumps(_log_dict))
