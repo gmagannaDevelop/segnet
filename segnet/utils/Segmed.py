@@ -10,13 +10,12 @@ from typing import Tuple, Optional, Union, Dict, Any, NoReturn, Callable, List
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Deep Learning Backend :
 import tensorflow as tf
 
 # Repo-specific imports :
-from segnet.models import unet
 from segnet.utils import timing
 from segnet.metrics import metrics as mts
-
 
 class Segmed(object):
   """
